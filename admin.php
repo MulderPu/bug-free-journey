@@ -18,33 +18,37 @@
             date_default_timezone_set("Asia/Kuching");
             $currentDate = date('Y-m-d');
             $currentTime = date('H:i');
-
             $twoHour = date('H:i',strtotime('+2 hour'));
-            $convertTwoHour = strtotime($twoHour);
-            $convertCurrentTime = strtotime($currentTime);
 
             //show user request if pickup time is within 2 hours from current time
-            if($convertCurrentTime < $convertTwoHour){
-                $queryRequestData = "SELECT booking_number,
-                booking_email,
-                passenger_name,
-                passenger_contact,
-                unit_number,
-                street_number,
-                street_name,
-                suburb,
-                destination,
-                pickup_date,
-                pickup_time,
-                customer_email,
-                customer_name
-                FROM booking INNER JOIN customer on booking_email = customer_email
-                WHERE status = 'unassigned'
-                AND pickup_date = '$currentDate'";
-            }
+            $queryRequestData = "SELECT booking_number,
+            booking_email,
+            passenger_name,
+            passenger_contact,
+            unit_number,
+            street_number,
+            street_name,
+            suburb,
+            destination,
+            pickup_date,
+            pickup_time,
+            customer_email,
+            customer_name
+            FROM booking INNER JOIN customer on booking_email = customer_email
+            WHERE status = 'unassigned'
+            AND pickup_date = '$currentDate'
+            AND pickup_time BETWEEN '$currentTime' AND '$twoHour'";
 
             $selectData = mysqli_query($conn,$queryRequestData);
 
+            //check if the request is empty
+            $numRows = mysqli_num_rows($selectData);
+            //if the rows is empty
+            if($numRows == 0){
+                echo "No request at the moment.";
+            }
+
+            //print tables
             echo "<table border='1'>";
             echo "
             <tr>
@@ -84,6 +88,7 @@
                 $pickupDate = $rows['pickup_date'];
                 $pickupTime = $rows['pickup_time'];
 
+                //print table data with slash
                 if(!empty($unitNum)){
                     $slash = "/";
                     echo "
@@ -152,6 +157,7 @@
                 //update query to assigned
                 $query = "UPDATE booking SET status = 'assigned' WHERE booking_number = '$referenceNum'";
                 mysqli_query($conn,$query);
+                echo "The request had been updated.";
             }else{
                 echo "Invalid reference number or status is assigned.";
             }
