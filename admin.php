@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="author" content="Mulder Pu Ming Fei">
         <title>CabsOnline Admin Page</title>
     </head>
 

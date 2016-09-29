@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="author" content="Mulder Pu Ming Fei">
         <title>CabsOnline Booking</title>
     </head>
     <body>
@@ -167,16 +168,13 @@
                 }else{
                     $pickupTime = test_input($_POST['pickup_time']);
                     $convertInputTime = strtotime($pickupTime);
-                    $convertCurrentTime = strtotime($currentTime);
+                    $oneHour = date('H:i',strtotime('+1 hour'));
+                    $convertOneHour = strtotime($oneHour);
 
                     //only allow pickup time to have at least 1 hour
-                    if($convertInputTime < $convertCurrentTime){
-                        $oneHour = date('H:i',strtotime('+1 hour'));
-                        $convertOneHour = strtotime($oneHour);
-                        if($convertInputTime < $convertOneHour){
-                            $pickupTimeErr = "Error time input. Needed to be at least one hour from now.";
-                            $error = true;
-                        }
+                    if($convertInputTime <= $convertOneHour){
+                        $pickupTimeErr = "Error time input. Needed to be at least one hour from now.";
+                        $error = true;
                     }
 
                 }
